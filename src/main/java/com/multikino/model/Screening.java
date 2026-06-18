@@ -1,5 +1,6 @@
 package com.multikino.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +29,7 @@ public class Screening {
     @Column(name = "ticket_price")
     private double ticketPrice;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "screening", cascade = CascadeType.ALL)
     private List<Reservation> reservations;
 

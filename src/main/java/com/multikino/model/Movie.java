@@ -1,5 +1,6 @@
 package com.multikino.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class Movie {
 
     private String description;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<Screening> screenings;
 
