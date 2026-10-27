@@ -1,6 +1,6 @@
 # Multikino REST API
 
-A clean and straightforward cinema ticket booking system built with **Spring Boot**, **Java 17**, and **H2/MySQL**. I designed this API to handle everything from movie schedules to real-time seat validation when making a reservation.
+A cinema booking API built with **Spring Boot** and **Java 17**. It manages movies, screenings, users and reservations, including seat availability checks.
 
 ## Tech Stack
 
@@ -8,7 +8,7 @@ A clean and straightforward cinema ticket booking system built with **Spring Boo
 * **Spring Boot 3.2.5**
 * **Spring Data JPA** (Hibernate under the hood)
 * **H2 Database** (in-memory setup for quick local development)
-* **MySQL** (production-ready driver included)
+* **MySQL** (JDBC driver included; the default configuration uses H2)
 * **JUnit 5 + Mockito** (unit testing)
 * **Maven**
 
@@ -56,12 +56,12 @@ git clone https://github.com/ta56419/multikino-rest-api.git
 cd multikino-rest-api
 ```
 
-2. Fire up the application using Maven:
+2. Start the application using Maven:
 ```bash
 mvn spring-boot:run
 ```
 
-The server will spin up at `http://localhost:8080`.
+The server runs at `http://localhost:8080`.
 
 If you need to check the database state, the H2 Console is available at `http://localhost:8080/h2-console` (make sure to use `jdbc:h2:mem:multikino` as the JDBC URL).
 
@@ -77,7 +77,7 @@ mvn test
 
 ## API Endpoints
 
-Instead of messy tables, here is a quick breakdown of the available endpoints you can hit:
+Available endpoints:
 
 ### Movies (`/api/movies`)
 
@@ -160,20 +160,20 @@ Instead of messy tables, here is a quick breakdown of the available endpoints yo
 
 ---
 
-## Business Logic Highlights
+## Reservation rules
 
-- **Smart Seat Validation**: The system checks available seats before confirming any reservation. If a user tries to book more seats than what's left in the room, the transaction fails and throws an error.
-- **Automatic Seat Restoration**: When a booking is cancelled via the PATCH endpoint, the system automatically frees up those spots and adds them back to the screening's pool of available seats.
-- **Status Lifecycle**: Reservations track states seamlessly between `CONFIRMED` and `CANCELLED`.
+- A reservation is rejected if there are not enough seats available.
+- Cancelling a reservation returns its seats to the screening's available count.
+- Reservations use the statuses `CONFIRMED` and `CANCELLED`.
 
 ---
 
 ## Testing Setup
 
-The project ships with **7 JUnit tests** backed by Mockito to keep things stable:
+There are **7 JUnit tests** using Mockito:
 
 - **MovieServiceTest** — Covers standard CRUD logic and the title search feature.
-- **ReservationServiceTest** — Handles edge cases for ticket booking, ensuring seat validation works perfectly and exceptions are thrown when they should be.
+- **ReservationServiceTest** — Checks seat availability, cancellation and expected exceptions.
 
 ---
 
